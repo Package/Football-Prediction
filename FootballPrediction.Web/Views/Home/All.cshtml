@@ -1,0 +1,17 @@
+﻿@model IEnumerable<FootballPrediction.Data.Models.GameWeek>
+
+@{
+    ViewBag.Title = "GameWeek History";
+}
+
+<div class="row">
+    @if (Model != null && Model.Count() > 0)
+    {
+        foreach (var gameweek in Model)
+        {
+            <div class="col-md-6">
+                @Html.Partial("GameWeeks/_FixtureList", gameweek)
+            </div>
+        }
+    }
+</div>

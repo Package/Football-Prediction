@@ -1,0 +1,47 @@
+﻿@model IEnumerable<FootballPrediction.Data.Models.LeagueTeam>
+@using PagedList.Mvc;
+@using PagedList;
+@{
+    ViewBag.Title = "Global League Table";
+}
+
+<h2 class="page-header">Global League Table</h2>
+
+@*<p>
+    @Html.ActionLink("Create New League", "Create")
+        </p>*@
+
+    <div class="row">
+        <div class="col-md-10">
+            <table class="table table-responsive table-condensed table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Team Name/Player</th>
+                        <th>Played</th>
+                        <th>Correct Scores</th>
+                        <th>Correct Results</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Position</td>
+                            <td>
+                                <div>@item.TeamName <br/><span class="text-muted">@string.Format("{0} {1}", item.FirstName, item.LastName)</span></div>
+                            </td>
+                            <td>@item.WeeksPredicted</td>
+                            <td>@item.CorrectScores</td>
+                            <td>@item.CorrectResults</td>
+                            <td>@item.Points</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @Html.PagedListPager( (IPagedList) Model, page => Url.Action("Index", "League", new { page=page }))
+        </div>
+    </div>

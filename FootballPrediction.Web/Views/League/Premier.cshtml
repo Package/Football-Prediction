@@ -1,0 +1,9 @@
+﻿@model IEnumerable<FootballPrediction.Data.Models.PremierLeagueTeam>
+
+@{
+    ViewBag.Title = "Premier League Table";
+}
+
+<h2 class="page-header">Premier League Table</h2>
+
+@Html.Partial("Leagues/_LeagueTable", Model)

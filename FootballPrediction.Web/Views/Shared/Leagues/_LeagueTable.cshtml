@@ -1,0 +1,41 @@
+﻿@model IEnumerable<FootballPrediction.Data.Models.PremierLeagueTeam>
+
+<table class="table table-responsive table-condensed table-hover table-striped">
+    <thead>
+        <tr>
+            <th><abbr title="Position">Pos</abbr></th>
+            <th>Team</th>
+            <th><abbr title="Played">Pld</abbr></th>
+            <th><abbr title="Wins">W</abbr></th>
+            <th><abbr title="Draws">D</abbr></th>
+            <th><abbr title="Losses">L</abbr></th>
+            <th><abbr title="Goals For">GF</abbr></th>
+            <th><abbr title="Goals Against">GA</abbr></th>
+            <th><abbr title="Goal Difference">GD</abbr></th>
+            <th><abbr title="Points">Pts</abbr></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var team in Model)
+        {
+            <tr>
+                <td>@team.Position</td>
+                <td>
+                    <p>
+                        <img width="20" height="20" src="@Url.Content(string.Format("~/Images/TeamBadges/{0}.png", team.ShortName))"
+                             alt="@team.TeamName" />
+                        @team.TeamName
+                    </p>
+                </td>
+                <td>@team.Played</td>
+                <td>@team.Wins</td>
+                <td>@team.Draws</td>
+                <td>@team.Losses</td>
+                <td>@team.GoalsFor</td>
+                <td>@team.GoalsAgainst</td>
+                <td>@team.GoalDifference</td>
+                <td>@team.Points</td>
+            </tr>
+        }
+    </tbody>
+</table>

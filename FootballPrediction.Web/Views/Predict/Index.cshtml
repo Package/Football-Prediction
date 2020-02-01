@@ -1,0 +1,56 @@
+﻿@model FootballPrediction.Web.ViewModels.PredictViewModel
+
+@{
+    ViewBag.Title = $"Predictions for {Model.GameWeek.Name}";
+}
+
+<h2 class="page-header">@($"Predictions for {Model.GameWeek.Name}")</h2>
+
+@if (Model.GameWeek.DeadlineDate > DateTime.Now)
+{
+    // Can only make predictions upto the deadline, after that only show the results.
+    <div class="row">
+        <div class="col-md-6">
+            @using (Html.BeginForm("Index", "Predict", FormMethod.Post, new { @class = "form-inline" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => Model.GameWeek.Id, Model.GameWeek.Id)
+
+                for (var x = 0; x < Model.Predictions.Count; x++)
+                {
+                    <p>
+                        @Html.HiddenFor(model => model.Predictions[x].Id)
+                        @Html.HiddenFor(model => model.Predictions[x].Fixture.Id)
+
+                        @Html.LabelFor(model => model.Predictions[x].Fixture.HomeTeam.Name, Model.Predictions[x].Fixture.HomeTeam.Name)
+                        <img src="@Url.Content(string.Format("~/Images/TeamBadges/{0}.png", Model.Predictions[x].Fixture.HomeTeam.ShortName))"
+                             alt="@Model.Predictions[x].Fixture.HomeTeam.Name" />
+                        @Html.DropDownListFor(model => model.Predictions[x].HomeScore, Model.Predictions[x].ScoreSelectList(home: true), new { @class = "form-control" })
+
+                        @Html.DropDownListFor(model => model.Predictions[x].AwayScore, Model.Predictions[x].ScoreSelectList(home: false), new { @class = "form-control" })
+                        <img src="@Url.Content(string.Format("~/Images/TeamBadges/{0}.png", Model.Predictions[x].Fixture.AwayTeam.ShortName))"
+                             alt="@Model.Predictions[x].Fixture.AwayTeam.Name" />
+                        @Html.LabelFor(model => model.Predictions[x].Fixture.AwayTeam.Name, Model.Predictions[x].Fixture.AwayTeam.Name)
+                    </p>
+                }
+
+                <button type="submit" class="btn btn-lg btn-success">Save Predictions</button>
+            }
+        </div>
+
+        <div class="col-md-6">
+            @Html.Partial("Leagues/_LeagueTable", Model.LeagueTable)
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        <p>The deadline for @Model.GameWeek.Name predictions has now passed.</p>
+        <p>@Html.ActionLink("Return to homepage", "Index", "Home")</p>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

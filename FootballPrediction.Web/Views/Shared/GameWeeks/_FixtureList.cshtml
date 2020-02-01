@@ -1,0 +1,29 @@
+﻿@model FootballPrediction.Data.Models.GameWeek
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">@Model.Name <span class="pull-right">@Model.DeadlineDate</span></h3>
+    </div>
+    <div class="panel-body">
+        <div class="list-group">
+            @foreach (var fixture in Model.Fixtures.OrderBy(f => f.KickoffDate).ThenBy(f => f.HomeTeam.Name))
+            {
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        @fixture.HomeTeam.Name
+                        <img src="@Url.Content(string.Format("~/Images/TeamBadges/{0}.png", fixture.HomeTeam.ShortName))" alt="@fixture.HomeTeam.Name" />
+                        @fixture.FormatResult()
+                        <img src="@Url.Content(string.Format("~/Images/TeamBadges/{0}.png", fixture.AwayTeam.ShortName))" alt="@fixture.AwayTeam.Name" />
+                        @fixture.AwayTeam.Name
+                    </h4>
+                    <p class="list-group-item-text text-muted">@fixture.KickoffDate</p>
+                </div>
+            }
+        </div>
+
+        @if (Model.DeadlineDate > DateTime.Now)
+        {
+            <a href="@Url.Action("Index", "Predict", new { gameweek = Model.Id})" class="btn btn-lg btn-success">Set Predictions</a>
+        }
+    </div>
+</div>

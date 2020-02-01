@@ -1,0 +1,41 @@
+﻿* {
+    font-family: 'IBM Plex Sans', Arial, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 300;
+}
+
+body {
+    padding-top: 50px;
+    height: 100%;
+    /*padding-bottom: 20px;*/
+}
+
+.navbar, .navbar ul, .navbar li {
+    background: #37003c !important;
+    color: #f4f4f4 !important;
+}
+    .navbar ul li:hover, .navbar a:hover {
+        background: #37003c !important;
+    }
+
+    .navbar a {
+        color: #f4f4f4 !important;
+    }
+
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 15px;
+    background: #fff;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
