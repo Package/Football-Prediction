@@ -21,6 +21,7 @@ namespace FootballPrediction.Web
             container.RegisterType<IPredictionService, PredictionService>();
             container.RegisterType<IFixtureService, FixtureService>();
             container.RegisterType<ILeagueService, LeagueService>();
+            container.RegisterType<IPredictionService, PredictionService>();
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }

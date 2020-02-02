@@ -14,6 +14,7 @@ namespace FootballPrediction.Services.Interfaces
         Task<List<GameWeek>> GetGameWeeks(PredictionContext context);
         Task<List<Fixture>> GetFixturesForGameWeek(GameWeek gameWeek, PredictionContext context);
         Task<GameWeek> GetGameWeekById(Guid guid, PredictionContext context);
+        Task<GameWeek> GetGameWeekByInternalId(int internalId, PredictionContext context);
         Task<GameWeek> GetUpcomingGameweek(PredictionContext context);
         Task<GameWeek> GetCurrentGameweek(PredictionContext context);
     }
@@ -40,6 +41,17 @@ namespace FootballPrediction.Services.Interfaces
         public async Task<GameWeek> GetGameWeekById(Guid guid, PredictionContext context)
         {
             return await context.GameWeeks.FirstOrDefaultAsync(gw => gw.Id == guid);
+        }
+
+        /// <summary>
+        /// Get details of a gameweek by internal ID reference.
+        /// </summary>
+        /// <param name="internalId"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<GameWeek> GetGameWeekByInternalId(int internalId, PredictionContext context)
+        {
+            return await context.GameWeeks.FirstOrDefaultAsync(gw => gw.InternalId == internalId);
         }
 
         /// <summary>

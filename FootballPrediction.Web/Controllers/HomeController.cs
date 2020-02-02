@@ -36,11 +36,13 @@ namespace FootballPrediction.Web.Controllers
             var latest = await gameWeekService.GetCurrentGameweek(context);
             var setPredictions = await predictionService.HasSetPredictions(upcoming, User.Identity.Name, context);
 
+            ViewBag.PredictionResults = await predictionService.GetPredictionResultsForGameWeek(latest, User.Identity.Name, context);
+
             var viewModel = new HomepageViewModel
             {
                 LatestGameweek = latest,
                 UpcomingGameweek = upcoming,
-                SetPredictions = setPredictions
+                SetPredictions = setPredictions,
             };
 
             return View(viewModel);

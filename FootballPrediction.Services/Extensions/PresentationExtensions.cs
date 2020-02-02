@@ -21,10 +21,25 @@ namespace FootballPrediction.Services.Extensions
         {
             if (fixture.HomeScore != -1 && fixture.AwayScore != -1)
             {
-                return string.Format("{0}-{1}", fixture.HomeScore, fixture.AwayScore);
+                return $"{fixture.HomeScore}-{fixture.AwayScore}";
             }
 
             return string.Format("vs.");
+        }
+
+        /// <summary>
+        /// Formats the score display of a prediction.
+        /// </summary>
+        /// <param name="prediction"></param>
+        /// <returns></returns>
+        public static string FormatPrediction(this Prediction prediction)
+        {
+            if (prediction.HomeScore != -1 && prediction.AwayScore != -1)
+            {
+                return $"{prediction.HomeScore}-{prediction.AwayScore}";
+            }
+
+            return string.Empty;
         }
 
         /// <summary>

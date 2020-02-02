@@ -81,6 +81,7 @@
     <Compile Include="Models\Fixture.cs" />
     <Compile Include="Models\GameWeek.cs" />
     <Compile Include="Models\LeagueTeam.cs" />
+    <Compile Include="Models\PredictionResult.cs" />
     <Compile Include="Models\PremierLeagueTeam.cs" />
     <Compile Include="Models\Prediction.cs" />
     <Compile Include="Models\Team.cs" />

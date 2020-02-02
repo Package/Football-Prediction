@@ -1,0 +1,21 @@
+﻿@model FootballPrediction.Web.ViewModels.ProfileViewModel
+
+@{
+    int previousGameWeekId = Math.Max(Model.GameWeek.InternalId - 1, 1);
+    int nextGameweekId = Math.Min(Model.GameWeek.InternalId + 1, 38);
+}
+
+<nav>
+    <ul class="pager">
+        <li class="previous">
+            <a href="@Url.Action("Index", "Profile", new {id = Model.User.Id, gameweek = previousGameWeekId})">
+                &larr; @($"Gameweek {previousGameWeekId}")
+            </a>
+        </li>
+        <li class="next">
+            <a href="@Url.Action("Index", "Profile", new {id = Model.User.Id, gameweek = nextGameweekId})">
+                @($"Gameweek {nextGameweekId}") &rarr;
+            </a>
+        </li>
+    </ul>
+</nav>

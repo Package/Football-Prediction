@@ -31,7 +31,7 @@
                         <tr>
                             <td>@item.Position</td>
                             <td>
-                                <div>@item.TeamName <br/><span class="text-muted">@string.Format("{0} {1}", item.FirstName, item.LastName)</span></div>
+                                <div>@Html.ActionLink(item.TeamName, "Index", "Profile", new { id = item.Id }, null) <br/><span class="text-muted">@($"{item.FirstName} {item.LastName}")</span></div>
                             </td>
                             <td>@item.WeeksPredicted</td>
                             <td>@item.CorrectScores</td>

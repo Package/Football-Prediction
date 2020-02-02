@@ -1,5 +1,9 @@
 ﻿@model FootballPrediction.Data.Models.GameWeek
 
+@{
+    var predictionResults = (List<PredictionResult>)ViewBag.PredictionResults;
+}
+
 <div class="panel panel-primary">
     <div class="panel-heading">
         <h3 class="panel-title">@Model.Name <span class="pull-right">@Model.DeadlineDate</span></h3>
@@ -10,13 +14,45 @@
             {
                 <div class="list-group-item">
                     <h4 class="list-group-item-heading">
-                        @fixture.HomeTeam.Name
-                        <img src="@Url.Content(string.Format("~/Images/TeamBadges/{0}.png", fixture.HomeTeam.ShortName))" alt="@fixture.HomeTeam.Name" />
-                        @fixture.FormatResult()
-                        <img src="@Url.Content(string.Format("~/Images/TeamBadges/{0}.png", fixture.AwayTeam.ShortName))" alt="@fixture.AwayTeam.Name" />
-                        @fixture.AwayTeam.Name
+                        <span>
+                            @fixture.HomeTeam.Name
+                            <img src="@Url.Content(string.Format("~/Images/TeamBadges/{0}.png", fixture.HomeTeam.ShortName))" alt="@fixture.HomeTeam.Name" />
+                            @fixture.FormatResult()
+                            <img src="@Url.Content(string.Format("~/Images/TeamBadges/{0}.png", fixture.AwayTeam.ShortName))" alt="@fixture.AwayTeam.Name" />
+                            @fixture.AwayTeam.Name
+                        </span>
+                        <span class="pull-right">
+                            @{
+                                var result = predictionResults.FirstOrDefault(pr => pr.Fixture.Id == fixture.Id);
+                            }
+                            @if (result != null)
+                            {
+                                if (result.GetPoints() > 0)
+                                {
+                                    <span class="text-muted">
+                                        @result.Prediction.FormatPrediction()
+
+                                        @for (var x = 0; x < result.GetPoints(); x++)
+                                        {
+                                            <i class="glyphicon glyphicon-ok" style="color: green;"></i>
+                                        }
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">
+                                        @result.Prediction.FormatPrediction()
+                                        <i class="glyphicon glyphicon-remove" style="color: red;"></i>
+                                    </span>
+                                }
+                            }
+                        </span>
                     </h4>
-                    <p class="list-group-item-text text-muted">@fixture.KickoffDate</p>
+                    <div class="list-group-item-text">
+                        <p class="text-muted">
+                            @fixture.KickoffDate
+                        </p>
+                    </div>
                 </div>
             }
         </div>

@@ -16,6 +16,12 @@ namespace FootballPrediction.Services.Interfaces
 
     public class FixtureService : IFixtureService
     {
+        /// <summary>
+        /// Returns details for a specified fixture ID.
+        /// </summary>
+        /// <param name="FixtureId"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public async Task<Fixture> GetFixtureById(Guid FixtureId, PredictionContext context)
         {
             return await context.Fixtures.FirstOrDefaultAsync(f => f.Id == FixtureId);
