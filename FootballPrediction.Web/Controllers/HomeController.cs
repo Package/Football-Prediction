@@ -16,14 +16,12 @@ namespace FootballPrediction.Web.Controllers
         private readonly IGameWeekService gameWeekService;
         private readonly IPredictionService predictionService;
         private readonly ILeagueService leagueService;
-        private readonly PredictionContext context;
 
         public HomeController(
             IGameWeekService gameWeekService, 
             IPredictionService predictionService,
             ILeagueService leagueService)
         {
-            this.context = new PredictionContext();
             this.gameWeekService = gameWeekService;
             this.predictionService = predictionService;
             this.leagueService = leagueService;
@@ -32,11 +30,11 @@ namespace FootballPrediction.Web.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            var upcoming = await gameWeekService.GetUpcomingGameweek(context);
-            var latest = await gameWeekService.GetCurrentGameweek(context);
-            var setPredictions = await predictionService.HasSetPredictions(upcoming, User.Identity.Name, context);
+            var upcoming = await gameWeekService.GetUpcomingGameweek();
+            var latest = await gameWeekService.GetCurrentGameweek();
+            var setPredictions = await predictionService.HasSetPredictions(upcoming, User.Identity.Name);
 
-            ViewBag.PredictionResults = await predictionService.GetPredictionResultsForGameWeek(latest, User.Identity.Name, context);
+            ViewBag.PredictionResults = await predictionService.GetPredictionResultsForGameWeek(latest, User.Identity.Name);
 
             var viewModel = new HomepageViewModel
             {
@@ -51,7 +49,7 @@ namespace FootballPrediction.Web.Controllers
         [HttpGet]
         public async Task<ActionResult> All()
         {
-            var gameweeks = await gameWeekService.GetGameWeeks(context);
+            var gameweeks = await gameWeekService.GetGameWeeks();
             return View(gameweeks);
         }
     }

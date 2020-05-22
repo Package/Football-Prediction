@@ -2,6 +2,11 @@
 
 @{
     ViewBag.Title = $"{Model.User.TeamName}'s Profile";
+
+    var maybePredictions = (List<PredictionResult>)ViewBag.PredictionResults;
+    var totalPointsForGameWeek = maybePredictions.Sum(p => p.GetPoints());
+    var totalCorrectScores = maybePredictions.Sum(p => p.CorrectScore() ? 1 : 0);
+    var totalCorrectResult = maybePredictions.Sum(p => p.CorrectResult() ? 1 : 0);
 }
 
 <h2 class="page-header">@($"{Model.User.TeamName}'s Profile")</h2>
@@ -12,6 +17,27 @@
         @Html.Partial("GameWeeks/_FixtureList", Model.GameWeek)
         @Html.Partial("Profiles/_GameWeekPager", Model)
     </div>
+
+    @if (maybePredictions != null && maybePredictions.Any())
+    {
+        <div class="col-md-4">
+            <h4 class="page-header">@Model.GameWeek.Name</h4>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <span class="badge">@totalPointsForGameWeek</span>
+                    Total Points
+                </li>
+                <li class="list-group-item">
+                    <span class="badge">@totalCorrectScores</span>
+                    Correct Scores
+                </li>
+                <li class="list-group-item">
+                    <span class="badge">@totalCorrectResult</span>
+                    Correct Results
+                </li>
+            </ul>
+        </div>
+    }
 </div>
 
 

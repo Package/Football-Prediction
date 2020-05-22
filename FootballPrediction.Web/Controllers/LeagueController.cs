@@ -16,14 +16,12 @@ namespace FootballPrediction.Web.Controllers
         private readonly IGameWeekService gameWeekService;
         private readonly IPredictionService predictionService;
         private readonly ILeagueService leagueService;
-        private readonly PredictionContext context;
 
         public LeagueController(
             IGameWeekService gameWeekService,
             IPredictionService predictionService,
             ILeagueService leagueService)
         {
-            this.context = new PredictionContext();
             this.gameWeekService = gameWeekService;
             this.predictionService = predictionService;
             this.leagueService = leagueService;
@@ -37,7 +35,7 @@ namespace FootballPrediction.Web.Controllers
 
             if (string.IsNullOrEmpty(league))
             {
-                leagueTeams = await leagueService.GlobalLeague(context);
+                leagueTeams = await leagueService.GlobalLeague();
             }
             else
             {
@@ -53,7 +51,7 @@ namespace FootballPrediction.Web.Controllers
         [HttpGet]
         public async Task<ActionResult> Premier()
         {
-            var table = await leagueService.GetPremierLeagueTable(context);
+            var table = await leagueService.GetPremierLeagueTable();
             return View(table);
         }
     }

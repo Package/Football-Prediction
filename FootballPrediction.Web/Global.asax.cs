@@ -13,7 +13,7 @@ namespace FootballPrediction.Web
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-            UnityConfig.RegisterComponents();
+            AutofacConfig.ConfigureAutofac();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);

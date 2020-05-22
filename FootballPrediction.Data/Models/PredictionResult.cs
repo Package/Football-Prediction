@@ -11,6 +11,8 @@ namespace FootballPrediction.Data.Models
         public Prediction Prediction { get; set; }
         public Fixture Fixture { get; set; }
 
+        public bool ShowPrediction { get { return DateTime.Now > Fixture.KickoffDate; } }
+
         public bool CorrectScore()
         {
             // Fixture has no final result yet.
@@ -36,9 +38,9 @@ namespace FootballPrediction.Data.Models
         public int GetPoints()
         {
             if (CorrectScore())
-                return 3;
+                return 30;
             if (CorrectResult())
-                return 1;
+                return 10;
 
             return 0;
         }

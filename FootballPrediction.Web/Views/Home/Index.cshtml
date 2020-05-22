@@ -10,19 +10,22 @@
         <p>@Html.ActionLink("Login", "Login", "Account") or @Html.ActionLink("Register", "Register", "Account") now to set your predictions!</p>
     </div>
 }
-else if (Model.SetPredictions)
+else if (Model.UpcomingGameweek != null)
 {
-    <div class="alert alert-success">
-        <p>Your predictions for <strong>@Model.UpcomingGameweek.Name</strong> are set! You can change these until <strong>@Model.UpcomingGameweek.DeadlineDate</strong></p>
-        <p>@Html.ActionLink("Change your predictions", "Index", "Predict", new { gameweek = Model.UpcomingGameweek.Id }, new { @class = "btn btn-success" })</p>
-    </div>
-}
-else
-{
-    <div class="alert alert-warning">
-        <p>You have not set your predictions for <strong>@Model.UpcomingGameweek.Name</strong> yet... you have until <strong>@Model.UpcomingGameweek.DeadlineDate</strong> to do this!</p>
-        <p>@Html.ActionLink("Set your predictions", "Index", "Predict", new { gameweek = Model.UpcomingGameweek.Id }, new { @class = "btn btn-warning" })</p>
-    </div>
+    if (Model.SetPredictions)
+    {
+        <div class="alert alert-success">
+            <p>Your predictions for <strong>@Model.UpcomingGameweek.Name</strong> are set! You can change these until <strong>@Model.UpcomingGameweek.DeadlineDate</strong></p>
+            <p>@Html.ActionLink("Change your predictions", "Index", "Predict", new { gameweek = Model.UpcomingGameweek.Id }, new { @class = "btn btn-success" })</p>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            <p>You have not set your predictions for <strong>@Model.UpcomingGameweek.Name</strong> yet... you have until <strong>@Model.UpcomingGameweek.DeadlineDate</strong> to do this!</p>
+            <p>@Html.ActionLink("Set your predictions", "Index", "Predict", new { gameweek = Model.UpcomingGameweek.Id }, new { @class = "btn btn-warning" })</p>
+        </div>
+    }
 }
 
 <div class="row">
@@ -33,7 +36,7 @@ else
 
     <div class="col-md-6">
         <h2 class="page-header">Upcoming Gameweek</h2>
-        @Html.Partial("GameWeeks/_FixtureList", Model.UpcomingGameweek)
+        @*@Html.Partial("GameWeeks/_FixtureList", Model.UpcomingGameweek)*@
     </div>
 </div>
 

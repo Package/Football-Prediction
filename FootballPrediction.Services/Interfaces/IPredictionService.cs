@@ -12,10 +12,10 @@ namespace FootballPrediction.Services.Interfaces
 {
     public interface IPredictionService
     {
-        Task<List<Prediction>> GetPredictionsForGameWeek(GameWeek gameWeek, string userName, PredictionContext context);
-        Task<List<PredictionResult>> GetPredictionResultsForGameWeek(GameWeek gameWeek, string userName, PredictionContext context);
-        Task SavePredictions(List<Prediction> predictions, string userName, PredictionContext context);
-        Task<bool> HasSetPredictions(GameWeek gameWeek, string userName, PredictionContext context);
+        Task<List<Prediction>> GetPredictionsForGameWeek(GameWeek gameWeek, string userName);
+        Task<List<PredictionResult>> GetPredictionResultsForGameWeek(GameWeek gameWeek, string userName);
+        Task SavePredictions(List<Prediction> predictions, string userName);
+        Task<bool> HasSetPredictions(GameWeek gameWeek, string userName);
     }
 
     public class PredictionService : IPredictionService
@@ -23,15 +23,18 @@ namespace FootballPrediction.Services.Interfaces
         private readonly IUserService userService;
         private readonly IGameWeekService gameWeekService;
         private readonly IFixtureService fixtureService;
+        private readonly PredictionContext context;
 
         public PredictionService(
             IUserService userService, 
             IGameWeekService gameWeekService,
-            IFixtureService fixtureService)
+            IFixtureService fixtureService,
+            PredictionContext context)
         {
             this.userService = userService;
             this.gameWeekService = gameWeekService;
             this.fixtureService = fixtureService;
+            this.context = context;
         }
 
         /// <summary>
@@ -41,7 +44,7 @@ namespace FootballPrediction.Services.Interfaces
         /// <param name="userName"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<List<PredictionResult>> GetPredictionResultsForGameWeek(GameWeek gameWeek, string userName, PredictionContext context)
+        public async Task<List<PredictionResult>> GetPredictionResultsForGameWeek(GameWeek gameWeek, string userName)
         {
             var predictionResults = new List<PredictionResult>();
 
@@ -49,7 +52,7 @@ namespace FootballPrediction.Services.Interfaces
             if (string.IsNullOrEmpty(userName))
                 return predictionResults;
 
-            var predictions = await GetPredictionsForGameWeek(gameWeek, userName, context);
+            var predictions = await GetPredictionsForGameWeek(gameWeek, userName);
             predictionResults.AddRange(predictions.Select(p => new PredictionResult { Fixture = p.Fixture, Prediction = p }));
 
             return predictionResults;
@@ -63,14 +66,18 @@ namespace FootballPrediction.Services.Interfaces
         /// <param name="userName"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<List<Prediction>> GetPredictionsForGameWeek(GameWeek gameWeek, string userName, PredictionContext context)
+        public async Task<List<Prediction>> GetPredictionsForGameWeek(GameWeek gameWeek, string userName)
         {
             // Not logged in.
-            if (string.IsNullOrEmpty(userName))
+            if (string.IsNullOrEmpty(userName) || gameWeek == null)
                 return new List<Prediction>();
 
-            var maybePredictions = await context.Predictions.Where(p => p.User.UserName == userName && p.Fixture.GameWeek.Id == gameWeek.Id).ToListAsync();
-            var fixtures = await gameWeekService.GetFixturesForGameWeek(gameWeek, context);
+            var maybePredictions = await context.Predictions.Where(p => 
+                p.User != null && p.User.UserName == userName && 
+                p.Fixture != null && p.Fixture.GameWeek.Id == gameWeek.Id
+                ).ToListAsync();
+
+            var fixtures = await gameWeekService.GetFixturesForGameWeek(gameWeek);
 
             // If the user has not made a prediction for one (or more) of the fixtures, add in a default prediction ready for
             // them to edit.
@@ -82,7 +89,7 @@ namespace FootballPrediction.Services.Interfaces
                 {
                     maybePredictions.Add(new Prediction { 
                         Fixture = fixture,
-                        User = await userService.GetUserByName(userName, context),
+                        User = await userService.GetUserByName(userName),
                         HomeScore = -1,
                         AwayScore = -1,
                         Id = Guid.NewGuid()
@@ -100,12 +107,12 @@ namespace FootballPrediction.Services.Interfaces
         /// <param name="userName"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<bool> HasSetPredictions(GameWeek gameWeek, string userName, PredictionContext context)
+        public async Task<bool> HasSetPredictions(GameWeek gameWeek, string userName)
         {
             if (string.IsNullOrEmpty(userName))
                 return false;
 
-            var predictions = await this.GetPredictionsForGameWeek(gameWeek,userName, context);
+            var predictions = await this.GetPredictionsForGameWeek(gameWeek,userName);
             var missingPredictions = predictions.Any(p => p.HomeScore == -1 || p.AwayScore == -1);
 
             return !missingPredictions;
@@ -119,14 +126,14 @@ namespace FootballPrediction.Services.Interfaces
         /// <param name="userName"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task SavePredictions(List<Prediction> predictions, string userName, PredictionContext context)
+        public async Task SavePredictions(List<Prediction> predictions, string userName)
         {
             foreach (var prediction in predictions.Where(prediction => 
                 prediction.HomeScore >= 0 && prediction.AwayScore >= 0 && 
                 prediction.HomeScore <= 10 && prediction.AwayScore <= 10))
             {
                 // Check that fixture actually exists
-                var fixture = await fixtureService.GetFixtureById(prediction.Fixture.Id, context);
+                var fixture = await fixtureService.GetFixtureById(prediction.Fixture.Id);
                 if (fixture == null)
                     continue;
 
@@ -136,7 +143,7 @@ namespace FootballPrediction.Services.Interfaces
 
                 // Set user properly
                 if (prediction.User == null)
-                    prediction.User = await userService.GetUserByName(userName, context);
+                    prediction.User = await userService.GetUserByName(userName);
 
                 // Set fixture properly
                 prediction.Fixture = fixture;

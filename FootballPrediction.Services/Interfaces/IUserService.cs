@@ -11,18 +11,25 @@ namespace FootballPrediction.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<ApplicationUser> GetUserByName(string userName, PredictionContext context);
-        Task<ApplicationUser> GetById(string id, PredictionContext context);
+        Task<ApplicationUser> GetUserByName(string userName);
+        Task<ApplicationUser> GetById(string id);
     }
 
     public class UserService : IUserService
     {
-        public async Task<ApplicationUser> GetUserByName(string userName, PredictionContext context)
+        private readonly PredictionContext context;
+
+        public UserService(PredictionContext context)
+        {
+            this.context = context;
+        }
+
+        public async Task<ApplicationUser> GetUserByName(string userName)
         {
             return await context.Users.FirstOrDefaultAsync(u => u.UserName == userName);
         }
 
-        public async Task<ApplicationUser> GetById(string id, PredictionContext context)
+        public async Task<ApplicationUser> GetById(string id)
         {
             return await context.Users.FirstOrDefaultAsync(u => u.Id == id);
         }

@@ -23,16 +23,16 @@
                         </span>
                         <span class="pull-right">
                             @{
-                                var result = predictionResults.FirstOrDefault(pr => pr.Fixture.Id == fixture.Id);
+                                var result = predictionResults != null ? predictionResults.FirstOrDefault(pr => pr.Fixture.Id == fixture.Id) : null;
                             }
-                            @if (result != null)
+                            @if (result != null && result.ShowPrediction)
                             {
                                 if (result.GetPoints() > 0)
                                 {
                                     <span class="text-muted">
                                         @result.Prediction.FormatPrediction()
 
-                                        @for (var x = 0; x < result.GetPoints(); x++)
+                                        @for (var x = 0; x < result.GetPoints() / 10; x++)
                                         {
                                             <i class="glyphicon glyphicon-ok" style="color: green;"></i>
                                         }

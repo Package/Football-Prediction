@@ -11,23 +11,30 @@ namespace FootballPrediction.Services.Interfaces
 {
     public interface IGameWeekService
     {
-        Task<List<GameWeek>> GetGameWeeks(PredictionContext context);
-        Task<List<Fixture>> GetFixturesForGameWeek(GameWeek gameWeek, PredictionContext context);
-        Task<GameWeek> GetGameWeekById(Guid guid, PredictionContext context);
-        Task<GameWeek> GetGameWeekByInternalId(int internalId, PredictionContext context);
-        Task<GameWeek> GetUpcomingGameweek(PredictionContext context);
-        Task<GameWeek> GetCurrentGameweek(PredictionContext context);
+        Task<List<GameWeek>> GetGameWeeks();
+        Task<List<Fixture>> GetFixturesForGameWeek(GameWeek gameWeek);
+        Task<GameWeek> GetGameWeekById(Guid guid);
+        Task<GameWeek> GetGameWeekByInternalId(int internalId);
+        Task<GameWeek> GetUpcomingGameweek();
+        Task<GameWeek> GetCurrentGameweek();
     }
 
     public class GameWeekService : IGameWeekService
     {
+        private PredictionContext context;
+
+        public GameWeekService(PredictionContext context)
+        {
+            this.context = context;
+        }
+
         /// <summary>
         /// Gets all the fixtures for a provided gameweek
         /// </summary>
         /// <param name="gameWeek"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<List<Fixture>> GetFixturesForGameWeek(GameWeek gameWeek, PredictionContext context)
+        public async Task<List<Fixture>> GetFixturesForGameWeek(GameWeek gameWeek)
         {
             return await context.Fixtures.Where(f => f.GameWeek.Id == gameWeek.Id).OrderBy(f => f.KickoffDate).ThenBy(f => f.HomeTeam.Name).ToListAsync();
         }
@@ -38,7 +45,7 @@ namespace FootballPrediction.Services.Interfaces
         /// <param name="guid"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<GameWeek> GetGameWeekById(Guid guid, PredictionContext context)
+        public async Task<GameWeek> GetGameWeekById(Guid guid)
         {
             return await context.GameWeeks.FirstOrDefaultAsync(gw => gw.Id == guid);
         }
@@ -49,7 +56,7 @@ namespace FootballPrediction.Services.Interfaces
         /// <param name="internalId"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<GameWeek> GetGameWeekByInternalId(int internalId, PredictionContext context)
+        public async Task<GameWeek> GetGameWeekByInternalId(int internalId)
         {
             return await context.GameWeeks.FirstOrDefaultAsync(gw => gw.InternalId == internalId);
         }
@@ -59,7 +66,7 @@ namespace FootballPrediction.Services.Interfaces
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<List<GameWeek>> GetGameWeeks(PredictionContext context)
+        public async Task<List<GameWeek>> GetGameWeeks()
         {
             return await context.GameWeeks.OrderBy(gw => gw.DeadlineDate).ToListAsync();
         }
@@ -69,7 +76,7 @@ namespace FootballPrediction.Services.Interfaces
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<GameWeek> GetUpcomingGameweek(PredictionContext context)
+        public async Task<GameWeek> GetUpcomingGameweek()
         {
             return await context.GameWeeks.Where(gw => gw.DeadlineDate > DateTime.Now).OrderBy(gw => gw.DeadlineDate).FirstOrDefaultAsync();
         }
@@ -79,7 +86,7 @@ namespace FootballPrediction.Services.Interfaces
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<GameWeek> GetCurrentGameweek(PredictionContext context)
+        public async Task<GameWeek> GetCurrentGameweek()
         {
             return await context.GameWeeks.Where(gw => gw.DeadlineDate < DateTime.Now).OrderByDescending(gw => gw.DeadlineDate).FirstOrDefaultAsync();
         }

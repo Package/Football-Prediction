@@ -11,6 +11,9 @@ namespace FootballPrediction.Data.Models
         public int CorrectScores { get; set; }
         public int CorrectResults { get; set; }
         public int WeeksPredicted { get; set; }
+        public int CorrectScoresThisGW { get; set; }
+        public int CorrectResultsThisGW { get; set; }
+        public int GameWeekPoints { get; set; }
         public int Points { get; set; }
         public string TeamName { get; set; }
         public string FirstName { get; set; }

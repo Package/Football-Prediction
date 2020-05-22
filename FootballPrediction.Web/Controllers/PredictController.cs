@@ -17,14 +17,12 @@ namespace FootballPrediction.Web.Controllers
         private readonly IGameWeekService gameWeekService;
         private readonly IPredictionService predictionService;
         private readonly ILeagueService leagueService;
-        private readonly PredictionContext context;
 
         public PredictController(
             IGameWeekService gameWeekService,
             IPredictionService predictionService,
             ILeagueService leagueService)
         {
-            this.context = new PredictionContext();
             this.gameWeekService = gameWeekService;
             this.predictionService = predictionService;
             this.leagueService = leagueService;
@@ -36,9 +34,9 @@ namespace FootballPrediction.Web.Controllers
             if (string.IsNullOrEmpty(gameweek))
                 return Redirect("~/");
                 
-            var gw = await gameWeekService.GetGameWeekById(Guid.Parse(gameweek), context);
-            var predictions = await predictionService.GetPredictionsForGameWeek(gw, User.Identity.Name, context);
-            var table = await leagueService.GetPremierLeagueTable(context);
+            var gw = await gameWeekService.GetGameWeekById(Guid.Parse(gameweek));
+            var predictions = await predictionService.GetPredictionsForGameWeek(gw, User.Identity.Name);
+            var table = await leagueService.GetPremierLeagueTable();
 
             var viewModel = new PredictViewModel { 
                 GameWeek = gw,
@@ -56,7 +54,7 @@ namespace FootballPrediction.Web.Controllers
             if (!ModelState.IsValid)
                 return RedirectToAction("Index", new { gameweek = viewModel.GameWeek.Id });
 
-            await predictionService.SavePredictions(viewModel.Predictions, User.Identity.Name, context);
+            await predictionService.SavePredictions(viewModel.Predictions, User.Identity.Name);
 
             return Redirect("~/");
         }
